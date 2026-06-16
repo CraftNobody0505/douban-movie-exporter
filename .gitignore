@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+
+# Local secrets
+douban_cookie.txt
+.env
+
+# Exported data
+douban_movie_*.csv
+*.xlsx
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
