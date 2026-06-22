@@ -1,54 +1,27 @@
-# 豆瓣电影记录导出
+# 豆瓣电影与读书记录导出
 
-把你的豆瓣电影「看过 / 想看 / 在看」记录导出成 CSV，放到本地慢慢整理。  
-不需要安装第三方库，一个 Python 脚本就能跑。
+把自己的豆瓣电影和读书记录导出成 CSV，保存到本地。📚🎬
 
-## 能导出什么
+不需要安装第三方库，有 Python 3 就能运行。
 
-📽️ 支持三类电影记录：
+## ✨ 这次升级了什么
 
-- `collect`：看过
-- `wish`：想看
-- `do`：在看
+- 新增豆瓣读书记录导出
+- 电影支持：看过 / 想看 / 在看
+- 读书支持：读过 / 想读 / 在读
+- 支持评分、日期、短评、链接、封面等字段
+- 支持登录 Cookie
+- 自动放慢翻页速度，降低触发风控的概率
 
-📝 CSV 里会包含：
+## 🎬 导出电影记录
 
-- 片名
-- 你的评分
-- 标记日期
-- 短评
-- 上映日期
-- 国家 / 地区
-- 豆瓣链接
-- 豆瓣 subject id
-- 封面链接
-- 列表页简介
-
-## 怎么用
-
-先准备 Python 3，然后运行：
+运行：
 
 ```powershell
 py douban_movie_export.py --user YOUR_DOUBAN_ID
 ```
 
-`YOUR_DOUBAN_ID` 换成你的豆瓣 ID。
-
-比如你的电影主页是：
-
-```text
-https://movie.douban.com/people/YOUR_DOUBAN_ID/
-```
-
-那 `YOUR_DOUBAN_ID` 就是中间那段。
-
-## 导出不同状态
-
-导出「看过」：
-
-```powershell
-py douban_movie_export.py --user YOUR_DOUBAN_ID --status collect
-```
+默认导出「看过」。
 
 导出「想看」：
 
@@ -62,58 +35,76 @@ py douban_movie_export.py --user YOUR_DOUBAN_ID --status wish
 py douban_movie_export.py --user YOUR_DOUBAN_ID --status do
 ```
 
-三类都导出：
+三类一起导出：
 
 ```powershell
 py douban_movie_export.py --user YOUR_DOUBAN_ID --status all
 ```
 
-## 如果遇到 403
+## 📚 导出读书记录
 
-豆瓣有时候不让匿名脚本访问，会返回 `403 Forbidden`。  
-这时候需要用你浏览器里的 Cookie。
+运行：
 
-做法：
+```powershell
+py douban_book_export.py --user YOUR_DOUBAN_ID
+```
+
+默认会把「读过 / 想读 / 在读」三类一起导出。
+
+只导出「读过」：
+
+```powershell
+py douban_book_export.py --user YOUR_DOUBAN_ID --status collect
+```
+
+只导出「想读」：
+
+```powershell
+py douban_book_export.py --user YOUR_DOUBAN_ID --status wish
+```
+
+## 🔎 豆瓣 ID 在哪里
+
+打开自己的豆瓣主页：
+
+```text
+https://www.douban.com/people/YOUR_DOUBAN_ID/
+```
+
+网址中间那段就是你的豆瓣 ID。
+
+## 🍪 如果遇到 403
+
+豆瓣有时会拒绝匿名脚本访问，这时需要浏览器 Cookie。
 
 1. 登录豆瓣
-2. 打开你的豆瓣电影记录页面
+2. 打开自己的电影或读书记录页面
 3. 按 `F12` 打开开发者工具
 4. 在 `Network` 里刷新页面
-5. 找一个 `movie.douban.com` 请求
-6. 复制 Request Headers 里的 `Cookie`
-7. 在脚本同目录新建 `douban_cookie.txt`
-8. 把 Cookie 粘进去，再重新运行脚本
+5. 点一个豆瓣请求，复制 Request Headers 里的 `Cookie`
+6. 在脚本目录新建 `douban_cookie.txt`
+7. 把 Cookie 粘进去，再运行脚本
 
-⚠️ 不要把 `douban_cookie.txt` 发给别人，也不要上传到 GitHub。  
-仓库里的 `.gitignore` 已经默认忽略它。
+⚠️ `douban_cookie.txt` 相当于登录凭据，不要发给别人，也不要上传到 GitHub。
 
-## 慢一点更稳
+## 🐢 慢一点更稳
 
-默认每页会等几秒，别跑太猛。  
-如果你的记录很多，可以把间隔调大：
+如果记录很多，可以加大请求间隔：
 
 ```powershell
 py douban_movie_export.py --user YOUR_DOUBAN_ID --delay 10
 ```
 
-## 中断了怎么办
-
-豆瓣电影列表每页 15 条。  
-如果跑到一半停了，可以用 `--start` 从某个位置继续。
-
-比如从第 32 页继续：
-
 ```powershell
-py douban_movie_export.py --user YOUR_DOUBAN_ID --start 465
+py douban_book_export.py --user YOUR_DOUBAN_ID --delay 15
 ```
 
-计算方式：
+## 📄 导出内容
 
-```text
-start = (页码 - 1) × 15
-```
+电影 CSV 包含片名、评分、标记日期、短评、上映信息、豆瓣链接、subject id 和封面等。
 
-## 小提醒
+读书 CSV 包含书名、评分、标记日期、短评、作者、出版社、出版日期、价格、标签、豆瓣链接、subject id 和封面等。
 
-🍵 这个脚本适合备份自己的豆瓣电影记录。  
-请控制请求频率，不要拿它批量抓别人数据，也不要商用。
+## ☕ 小提醒
+
+这个项目适合备份自己的豆瓣记录。请控制请求频率，不要批量抓取他人数据，也不要商用。

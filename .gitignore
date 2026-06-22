@@ -7,6 +7,7 @@ douban_cookie.txt
 
 # Exported data
 douban_movie_*.csv
+douban_books_*.csv
 *.xlsx
 
 # OS / editor
